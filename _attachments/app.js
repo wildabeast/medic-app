@@ -1,4 +1,4 @@
-var dataset;
+var results_dataset, errors_dataset, buildtimes_dataset;
 
 jQuery(function($) {
   window.dataExplorer = null;
@@ -6,7 +6,7 @@ jQuery(function($) {
 
   var queryParameters = recline.View.parseQueryString(decodeURIComponent(window.location.search));
 
-  dataset = new recline.Model.Dataset({
+  results_dataset = new recline.Model.Dataset({
     db_url: queryParameters['url'] || '/medic_results/',
     view_url: queryParameters['view_url'] || '/medic_results/_design/results/_view/all',
     backend: 'couchdb',
@@ -15,16 +15,42 @@ jQuery(function($) {
     }
   });
 
-  dataset.fetch().done(function(dataset) {
+  errors_dataset = new recline.Model.Dataset({
+    db_url: queryParameters['url'] || '/build_errors/',
+    view_url: queryParameters['view_url'] || '/build_errors/_design/errors/_view/all',
+    backend: 'couchdb',
+    query_options: {
+      'key': '_id'
+    }
+  });
+
+  buildtimes_dataset = new recline.Model.Dataset({
+    db_url: queryParameters['url'] || '/build_times/',
+    view_url: queryParameters['view_url'] || '/build_times/_design/times/_view/all',
+    backend: 'couchdb',
+    query_options: {
+      'key': '_id'
+    }
+  });
+
+  results_dataset.fetch().done(function(dataset) {
     console.log('records: ', dataset.records);
   });
 
-  createExplorer(dataset);
+  errors_dataset.fetch().done(function(dataset) {
+    console.log('records: ', dataset.records);
+  });
+
+  buildtimes_dataset.fetch().done(function(dataset) {
+    console.log('records: ', dataset.records);
+  });
+
+  createExplorer();
 });
 
 // make Explorer creation / initialization in a function so we can call it
 // again and again
-var createExplorer = function(dataset, state) {
+var createExplorer = function(state) {
   // remove existing data explorer view
   var reload = false;
   if (window.dataExplorer) {
@@ -37,20 +63,35 @@ var createExplorer = function(dataset, state) {
 
   var views = [
     {
-      id: 'grid',
-      label: 'Grid',
+      id: 'results',
+      label: 'Spec Results',
       view: new recline.View.SlickGrid({
-        model: dataset
+        model: results_dataset
       }),
     },
     {
-      id: 'graph',
-      label: 'Graph',
+      id: 'errors',
+      label: 'Build Errors',
+      view: new recline.View.SlickGrid({
+        model: errors_dataset
+      }),
+    },
+    {
+      id: 'times',
+      label: 'Build Times',
       view: new recline.View.Graph({
-        model: dataset
+        model: buildtimes_dataset
       }),
     }
     /*
+    ,
+    {
+      id: 'times1',
+      label: 'Build Times deets',
+      view: new recline.View.SlickGrid({
+        model: buildtimes_dataset
+      }),
+    }
     ,
     {
       id: 'map',
@@ -70,7 +111,7 @@ var createExplorer = function(dataset, state) {
   ];
 
   window.dataExplorer = new recline.View.MultiView({
-    model: dataset,
+    model: results_dataset,
     el: $el,
     state: state,
     views: views
