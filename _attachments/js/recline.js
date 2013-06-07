@@ -4453,6 +4453,7 @@ my.SlickGrid = Backbone.View.extend({
 
     );
     this.state = new recline.Model.ObjectState(state);
+
   },
 
   events: {
@@ -4613,12 +4614,7 @@ my.SlickGrid = Backbone.View.extend({
     });
 
     this.grid.onClick.subscribe(function(e, args) {
-      console.log('cell clickekd', e, args);
-      var fails = data.getModel(args.row).attributes.fails;
-      for (var i in fails) {
-        alert(fails[i].spec + "\n"  + fails[i].assertions[0].exception)
-      }
-
+      self.trigger("rowClick", data.getModel(args.row).attributes);
     });
 
     this.grid.onCellChange.subscribe(function (e, args) {

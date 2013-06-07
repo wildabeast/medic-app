@@ -37,15 +37,15 @@ jQuery(function($) {
   });
 
   results_dataset.fetch().done(function(dataset) {
-    console.log('records: ', dataset.records);
+    console.log('Results dataset: ', dataset.records.length);
   });
   
   errors_dataset.fetch().done(function(dataset) {
-    console.log('records: ', dataset.records);
+    console.log('Errors dataset: ', dataset.records.length);
   });
 
   buildtimes_dataset.fetch().done(function(dataset) {
-    console.log('records: ', dataset.records);
+    console.log('Times dataset: ', dataset.records.length);
   });
 
   createExplorer();
@@ -65,20 +65,22 @@ var createExplorer = function(state) {
   $el.appendTo(window.explorerDiv);
 
   var mainGrid = new recline.View.SlickGrid({
-        model: results_dataset,
-        state: {
-          gridOptions: {
-            rowClasses: function() {
-              console.log('here');
-            },
-            onClick: function() {
-              console.log('hi');
-            }
-          },
-          fitColumns: true
-        }
-      });
+    model: results_dataset,
+    state: {
+      fitColumns: true
+    }
+  });
 
+  mainGrid.on('rowClick', function(a) {
+    var html = _.template( $("#fails-template").html(), { fails: a.fails } );
+    $('.popup .content').html(html);
+    $('.popup .title').html(a.name + ' ' + a.platform + ' ' + a.version + ' ' + a.timestamp);
+    $('.popup').css("display", "block");
+  });
+
+  $('.popup-close').click(function(e) {
+    $(e.target.parentNode).css("display", "none");
+  })
 
   var views = [
     {

@@ -1,0 +1,63 @@
+.slickgrid_762261 .slick-header-column { left: 1000px; } 
+.slickgrid_762261 .slick-top-panel { height:25px; } 
+.slickgrid_762261 .slick-headerrow-columns { height:25px; } 
+.slickgrid_762261 .slick-cell { height:20px; } 
+.slickgrid_762261 .slick-row { height:25px; }
+.recline-slickgrid {
+  height: 550px;
+}
+.recline-timeline .vmm-timeline {
+  height: 550px;
+}
+
+.instructions {
+    font-family: "Courier New";
+}
+
+/* POPUP */
+.popup {
+    position:fixed;
+    top:15%;
+    bottom:15%;
+    left:15%;
+    right:15%;
+    padding:5px;
+    overflow-y:scroll;
+    border-radius:5px;
+    border:1px black solid;
+    background-color: rgba(10,10,10,0.9);
+    z-index:1000;
+    font-family:"Courier New";
+    color:rgba(220, 220, 220, 1);
+}
+.popup .title {
+    text-align:center;
+    padding:5px 0;
+}
+.popup .content {
+    padding: 25px;
+}
+.popup-close {
+    position:fixed;
+    right: 17%;
+    top: 17%;
+    width:16px;
+    height:16px;
+    background:url('no.png') 0 0 no-repeat;
+    cursor:pointer;
+}
+.popup .spec {
+    margin: 5px 10px;
+    font-weight:bold;
+    font-size:20px;
+}
+.popup .exception {
+    margin:0 20px;
+    font-size:15px;
+}
+.popup pre {
+    font-size:12px;
+    margin:0 25px;
+}
+.popup code {
+}
