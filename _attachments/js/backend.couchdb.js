@@ -126,8 +126,7 @@ var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
       out['skip'] = out.from || 0;
       out['limit'] = out.size || 100;
       delete out.from;
-      delete out.size;
-      out['include_docs'] = true;      
+      delete out.size;   
       return out;
     };
 
@@ -143,7 +142,7 @@ var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
       var jqxhr = self._makeRequest({
         url: url,
-        data: JSON.stringify(q),
+        data: $.param(q),
         dataType: self.options.dataType,
       });
       return jqxhr;
@@ -291,6 +290,8 @@ my.query = function(queryObj, dataset) {
   var cdb = new my.CouchDBWrapper(db_url, view_url); 
   var cdb_q = cdb._normalizeQuery(queryObj, query_options);
 
+  delete query_options['key'];
+
   cdb.query(queryObj, query_options).done(function(records){
 
     var query_result = { hits: [], total: 0 };
@@ -331,7 +332,7 @@ my.query = function(queryObj, dataset) {
       });
     query_result.total  = query_result.hits.length;
     query_result.facets = _computeFacets(query_result.hits, queryObj);
-    query_result.hits = query_result.hits.slice(cdb_q.skip, cdb_q.skip + cdb_q.limit+1);
+    //query_result.hits = query_result.hits.slice(cdb_q.skip, cdb_q.skip + cdb_q.limit+1);
     dfd.resolve(query_result);
 
   });

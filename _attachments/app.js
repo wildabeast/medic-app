@@ -11,7 +11,8 @@ jQuery(function($) {
     view_url: queryParameters['view_url'] || '/medic_results/_design/results/_view/all',
     backend: 'couchdb',
     query_options: {
-      'key': '_id'
+      'key':'id',
+      'descending' : true
     }
   });
 
@@ -29,14 +30,16 @@ jQuery(function($) {
     view_url: queryParameters['view_url'] || '/build_times/_design/times/_view/all',
     backend: 'couchdb',
     query_options: {
-      'key': '_id'
+      'key': '_id',
+      'descending': true,
+      'limit': 1000
     }
   });
 
   results_dataset.fetch().done(function(dataset) {
     console.log('records: ', dataset.records);
   });
-
+  
   errors_dataset.fetch().done(function(dataset) {
     console.log('records: ', dataset.records);
   });
@@ -61,29 +64,59 @@ var createExplorer = function(state) {
   var $el = $('<div />');
   $el.appendTo(window.explorerDiv);
 
+  var mainGrid = new recline.View.SlickGrid({
+        model: results_dataset,
+        state: {
+          gridOptions: {
+            rowClasses: function() {
+              console.log('here');
+            },
+            onClick: function() {
+              console.log('hi');
+            }
+          },
+          fitColumns: true
+        }
+      });
+
+
   var views = [
     {
       id: 'results',
       label: 'Spec Results',
-      view: new recline.View.SlickGrid({
-        model: results_dataset
-      }),
+      view: mainGrid,
     },
     {
       id: 'errors',
       label: 'Build Errors',
       view: new recline.View.SlickGrid({
-        model: errors_dataset
+        model: errors_dataset,
+        state: {
+          fitColumns: true
+        }
       }),
     },
     {
       id: 'times',
       label: 'Build Times',
       view: new recline.View.Graph({
-        model: buildtimes_dataset
+        model: buildtimes_dataset,
+        state: {
+          "group": "time",
+          "series": ["ios_duration", "android_duration"],
+          "graphType": "columns",
+          "graphOptions": {
+            xaxis: {
+              transform: function(n) {
+                console.log(n);
+                console.log(new Date(n));
+                return n;
+              }
+            }
+          }
+        }
       }),
-    }
-    /*
+    }/*
     ,
     {
       id: 'times1',
@@ -92,6 +125,7 @@ var createExplorer = function(state) {
         model: buildtimes_dataset
       }),
     }
+    
     ,
     {
       id: 'map',

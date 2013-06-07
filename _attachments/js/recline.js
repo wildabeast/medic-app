@@ -4612,6 +4612,15 @@ my.SlickGrid = Backbone.View.extend({
         self.state.set({columnsWidth:columnsWidth});
     });
 
+    this.grid.onClick.subscribe(function(e, args) {
+      console.log('cell clickekd', e, args);
+      var fails = data.getModel(args.row).attributes.fails;
+      for (var i in fails) {
+        alert(fails[i].spec + "\n"  + fails[i].assertions[0].exception)
+      }
+
+    });
+
     this.grid.onCellChange.subscribe(function (e, args) {
       // We need to change the model associated value
       //
